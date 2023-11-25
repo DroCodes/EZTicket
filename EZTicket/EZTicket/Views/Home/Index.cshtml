@@ -2,7 +2,33 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid">
+    <div id="completed-tickets"></div>
+    <div id="pending-tickets">
+        <table id="ticket-table" class="table">
+            <thead class="bg-primary text-light">
+            <tr>
+                <th scope="col">Ticket ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Ticket Description</th>
+                <th scope="col">Ticket Status</th>
+                <th scope="col">Ticket Priority</th>
+                <th scope="col">Ticket Type</th>
+                <th scope="col">Ticket Created</th>
+            </tr>
+            </thead>
+            <tbody>
+             <tr>
+                 <th scope="row">1</th>
+                 <td>Test</td>
+                 <td>Test Desc</td>
+                 <td>Test status</td>
+                 <td>Test priority</td>
+                 <td>Service</td>
+                 <td>01/11/2023</td>
+                 
+             </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
