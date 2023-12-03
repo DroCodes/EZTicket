@@ -38,7 +38,7 @@ public class PendingTicketService
         {
             _pendingTicketQueue.Insert(0, ticket);
         }
-        else if (ticket.Priority == 2)
+        else if (ticket.Priority == 2 && _pendingTicketQueue.Count >= 1)
         {
             _pendingTicketQueue.Insert(1, ticket);
         }
