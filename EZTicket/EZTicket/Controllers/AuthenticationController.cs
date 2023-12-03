@@ -85,6 +85,10 @@ public class AuthenticationController : Controller
         var user = new UserModel
         {
             UserName = registerModel.UserName,
+            FirstName = registerModel.FirstName,
+            LastName = registerModel.LastName,
+            EmailAddress = registerModel.EmailAddress,
+            PhoneNumber = registerModel.PhoneNumber
         };
         
         var result = await _userManager.CreateAsync(user, registerModel.Password);
