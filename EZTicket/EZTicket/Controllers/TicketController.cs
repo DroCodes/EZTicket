@@ -33,11 +33,11 @@ public class TicketController : Controller
     {
         var ticket = new PendingTickets
         {
-            Name = Request.Form["name"],
-            Description = Request.Form["description"],
-            ServiceType = Request.Form["service-type"],
-            Priority = Convert.ToInt32(Request.Form["priority"]),
-            CreatedBy = Request.Form["created-by"],
+            Name = Request.Form["Name"],
+            Description = Request.Form["Description"],
+            ServiceType = Request.Form["ServiceType"],
+            Priority = Convert.ToInt32(Request.Form["Priority"]),
+            CreatedBy = User.Identity.Name,
             DateCreated = DateTime.Now,
             DateUpdated = DateTime.Now
         };
@@ -77,12 +77,13 @@ public class TicketController : Controller
             {
                 var assignedTicket = new ActiveTickets
                 {
+                    Id = ticket.Id,
                     Name = ticket.Name,
                     Description = ticket.Description,
                     ServiceType = ticket.ServiceType,
                     Priority = ticket.Priority,
                     CreatedBy = ticket.CreatedBy,
-                    AssignedTo = "test",
+                    AssignedTo = User.Identity.Name,
                     DateCreated = ticket.DateCreated,
                     DateUpdated = ticket.DateUpdated
                 };
@@ -109,5 +110,44 @@ public class TicketController : Controller
 
         return RedirectToAction("Index", "Home");
     }
-
+    
+    public async Task<IActionResult> ActiveTicket(int id)
+    {
+        try
+        {
+            var ticket = await _activeRepo.GetActiveTicketAsync(id);
+            
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+            
+            ViewBag.ticket = ticket;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        return View();
+    }
+    
+    public async Task<IActionResult> UpdateTicket(int id)
+    {
+        try
+        {
+            var ticket = await _activeRepo.GetActiveTicketAsync(id);
+            
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+            
+            ViewBag.ticket = ticket;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        return RedirectToAction("ActiveTicket", "Ticket");
+    }
 }

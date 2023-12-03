@@ -2,83 +2,183 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="container-fluid">
-    <div class="d-flex justify-content-around">
-        <div id="pending-tickets">
-            <p class="m-0 p-0">Pending Tickets</p>
-            <table id="pending-ticket-table" class="table">
-                <thead class="bg-success text-light">
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Priority</th>
-                    <th scope="col"></th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (PendingTickets ticket in ViewBag.PendingTickets)
-                {
-                    <tr>
-                        <th scope="row">@ticket.Id</th>
-                        <td>@ticket.Name</td>
-                        @switch (@ticket.Priority)
-                        {
-                            case 1:
-                                <td>Low</td>
-                                break;
-                            case 2:
-                                <td>Medium</td>
-                                break;
-                            case 3:
-                                <td>High</td>
-                                break;
-                        }
-                        <td><a asp-route-id="@ticket.Id" asp-controller="Ticket" asp-action="PendingTicket">Open</a></td>
-                    </tr>
-                }
-                </tbody>
-            </table>
+@* <div class="container-fluid"> *@
+@*     <div class="d-flex justify-content-around"> *@
+@*         <div id="pending-tickets"> *@
+@*             <p class="m-0 p-0">Pending Tickets</p> *@
+@*             <table id="pending-ticket-table" class="table"> *@
+@*                 <thead class="bg-success text-light"> *@
+@*                 <tr> *@
+@*                     <th scope="col">ID</th> *@
+@*                     <th scope="col">Name</th> *@
+@*                     <th scope="col">Priority</th> *@
+@*                     <th scope="col"></th> *@
+@*                 </tr> *@
+@*                 </thead> *@
+@*                 <tbody> *@
+@*                 @foreach (PendingTickets ticket in ViewBag.PendingTickets) *@
+@*                 { *@
+@*                     <tr> *@
+@*                         <th scope="row">@ticket.Id</th> *@
+@*                         <td>@ticket.Name</td> *@
+@*                         @switch (@ticket.Priority) *@
+@*                         { *@
+@*                             case 1: *@
+@*                                 <td>Low</td> *@
+@*                                 break; *@
+@*                             case 2: *@
+@*                                 <td>Medium</td> *@
+@*                                 break; *@
+@*                             case 3: *@
+@*                                 <td>High</td> *@
+@*                                 break; *@
+@*                         } *@
+@*                         <td><a asp-route-id="@ticket.Id" asp-controller="Ticket" asp-action="PendingTicket">Open</a></td> *@
+@*                     </tr> *@
+@*                 } *@
+@*                 </tbody> *@
+@*             </table> *@
+@*         </div> *@
+@*         <div id="active-tickets" class="w-75"> *@
+@*             <p class="m-0 p-0">Active Tickets</p> *@
+@*             <table id="ticket-table" class="table"> *@
+@*                 <thead class="bg-primary text-light"> *@
+@*                 <tr> *@
+@*                     <th scope="col">ID</th> *@
+@*                     <th scope="col">Name</th> *@
+@*                     <th scope="col">Priority</th> *@
+@*                     <th scope="col">Type</th> *@
+@*                     <th scope="col">Assigned</th> *@
+@*                     <th scope="col">Created</th> *@
+@*                     <th scope="col">Updated</th> *@
+@*                 </tr> *@
+@*                 </thead> *@
+@*                 <tbody> *@
+@*                @foreach (ActiveTickets ticket in ViewBag.ActiveTickets) *@
+@*                { *@
+@*                    <tr> *@
+@*                        <th scope="row">@ticket.Id</th> *@
+@*                        <td>@ticket.Name</td> *@
+@*                        @switch (@ticket.Priority) *@
+@*                        { *@
+@*                            case 1: *@
+@*                                <td>Low</td> *@
+@*                                break; *@
+@*                            case 2: *@
+@*                                <td>Medium</td> *@
+@*                                break; *@
+@*                            case 3: *@
+@*                                <td>High</td> *@
+@*                                break; *@
+@*                        } *@
+@*                        <td>@ticket.ServiceType</td> *@
+@*                        <td>@ticket.AssignedTo</td> *@
+@*                        <td>@ticket.DateCreated</td> *@
+@*                        <td>@ticket.DateUpdated</td> *@
+@*                    </tr> *@
+@*                } *@
+@*                 </tbody> *@
+@*             </table> *@
+@*         </div> *@
+@*         </div> *@
+@* </div> *@
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    Pending Tickets
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead class="bg-success text-light">
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Priority</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (PendingTickets ticket in ViewBag.PendingTickets)
+                            {
+                                <tr>
+                                    <th scope="row">@ticket.Id</th>
+                                    <td>@ticket.Name</td>
+                                    <td>
+                                        @switch (@ticket.Priority)
+                                        {
+                                            case 1:
+                                                <span class="badge bg-info">Low</span>
+                                                break;
+                                            case 2:
+                                                <span class="badge bg-warning">Medium</span>
+                                                break;
+                                            case 3:
+                                                <span class="badge bg-danger">High</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td><a asp-route-id="@ticket.Id" asp-controller="Ticket" asp-action="PendingTicket" class="btn btn-primary">Open</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div id="active-tickets" class="w-75">
-            <p class="m-0 p-0">Active Tickets</p>
-            <table id="ticket-table" class="table">
-                <thead class="bg-primary text-light">
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Priority</th>
-                    <th scope="col">Type</th>
-                    <th scope="col">Assigned</th>
-                    <th scope="col">Created</th>
-                    <th scope="col">Updated</th>
-                </tr>
-                </thead>
-                <tbody>
-               @foreach (ActiveTickets ticket in ViewBag.ActiveTickets)
-               {
-                   <tr>
-                       <th scope="row">@ticket.Id</th>
-                       <td>@ticket.Name</td>
-                       @switch (@ticket.Priority)
-                       {
-                           case 1:
-                               <td>Low</td>
-                               break;
-                           case 2:
-                               <td>Medium</td>
-                               break;
-                           case 3:
-                               <td>High</td>
-                               break;
-                       }
-                       <td>@ticket.ServiceType</td>
-                       <td>@ticket.AssignedTo</td>
-                       <td>@ticket.DateCreated</td>
-                       <td>@ticket.DateUpdated</td>
-                   </tr>
-               }
-                </tbody>
-            </table>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    Active Tickets
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead class="bg-primary text-light">
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Priority</th>
+                                <th scope="col">Type</th>
+                                <th scope="col">Assigned</th>
+                                <th scope="col">Created</th>
+                                <th scope="col">Updated</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (ActiveTickets ticket in ViewBag.ActiveTickets)
+                            {
+                                <tr>
+                                    <th scope="row">@ticket.Id</th>
+                                    <td>@ticket.Name</td>
+                                    <td>
+                                        @switch (@ticket.Priority)
+                                        {
+                                            case 1:
+                                                <span class="badge bg-info">Low</span>
+                                                break;
+                                            case 2:
+                                                <span class="badge bg-warning">Medium</span>
+                                                break;
+                                            case 3:
+                                                <span class="badge bg-danger">High</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>@ticket.ServiceType</td>
+                                    <td>@ticket.AssignedTo</td>
+                                    <td>@ticket.DateCreated</td>
+                                    <td>@ticket.DateUpdated</td>
+                                    <td><a asp-route-id="@ticket.Id" asp-controller="Ticket" asp-action="ActiveTicket" class="btn btn-primary">Open</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        </div>
+    </div>
 </div>

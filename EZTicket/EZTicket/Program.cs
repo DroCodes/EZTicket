@@ -1,5 +1,6 @@
 using EZTicket.Models;
 using EZTicket.Repository;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,21 @@ builder.Services.AddDbContext<TicketContext>(options =>
 
 builder.Services.AddScoped<IActiveTicketRepository, ActiveTicketRepository>();
 builder.Services.AddScoped<IPendingTicketRepository, PendingTicketRepository>();
+
+builder.Services.AddIdentity<UserModel, IdentityRole>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+})
+    .AddEntityFrameworkStores<TicketContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Lockout.MaxFailedAccessAttempts = 100;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedAccount = false;
+});
 
 var app = builder.Build();
 
@@ -28,10 +44,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Authentication}/{action=Login}");
+
+await TicketContext.CreateAdminUser(app.Services);
 
 app.Run();
