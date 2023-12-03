@@ -12,12 +12,13 @@ public class PendingTicketRepository : IPendingTicketRepository
         _context = context;
     }
     
-    public async Task<List<PendingTickets>> GetPendingTicketsAsync()
+    public async Task<List<PendingTickets>?> GetPendingTicketsAsync()
     {
         try
         {
             var tickets = await _context.PendingTickets.ToListAsync();
-            return tickets;
+
+            return tickets.Count == 0 ? null : tickets;
         }
         catch (Exception e)
         {
