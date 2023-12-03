@@ -3,42 +3,6 @@
     ViewBag.Title = "Create Ticket";
 }
 
-@* <form method="post" asp-controller="Ticket" asp-action="AddTicket"> *@
-@*     <div class="form-group"> *@
-@*         <label for="name">Name</label> *@
-@*         <input type="text" class="form-control" id="name" name="name" placeholder="Name"> *@
-@*     </div> *@
-@*     <div class="form-group"> *@
-@*         <label for="created-by">Created by</label> *@
-@*         <input type="text" class="form-control" id="created-by" name="created-by" placeholder="created by"> *@
-@*     </div> *@
-@*     <div class="form-group"> *@
-@*         <label for="service-type">Example select</label> *@
-@*         <select class="form-control" id="service-type" name="service-type"> *@
-@*             <option>Select One</option> *@
-@*             <option>Service</option> *@
-@*             <option>Sales</option> *@
-@*             <option>Customer Service</option> *@
-@*         </select> *@
-@*     </div> *@
-@*     <div class="form-group"> *@
-@*         <label for="priority">Example select</label> *@
-@*         <select class="form-control" id="priority" name="priority"> *@
-@*             <option>Select Priority</option> *@
-@*             <option>1</option> *@
-@*             <option>2</option> *@
-@*             <option>3</option> *@
-@*         </select> *@
-@*     </div> *@
-@*     <div class="form-group"> *@
-@*         <label for="exampleFormControlTextarea1">Example textarea</label> *@
-@*         <textarea class="form-control" id="exampleFormControlTextarea1" name="description" rows="3"></textarea> *@
-@*     </div> *@
-@*     <div> *@
-@*         <button class="btn btn-primary" type="submit">Submit</button> *@
-@*     </div> *@
-@* </form> *@
-
  <div class="col-md-6">
      <div class="card">
          <div class="card-header bg-primary text-white">
@@ -70,7 +34,7 @@
                      <label for="description" class="form-label">Description</label>
                      <textarea class="form-control" id="description"  name="Description" rows="3" required></textarea>
                  </div>
-                 <a type="submit" class="btn btn-primary">Create Ticket</a>
+                 <button type="submit" class="btn btn-primary">Create Ticket</button>
              </form>
          </div>
      </div>

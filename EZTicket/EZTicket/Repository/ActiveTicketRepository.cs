@@ -55,9 +55,19 @@ public class ActiveTicketRepository : IActiveTicketRepository
         }
     }
 
-    public async Task<ActiveTickets> UpdateActiveTicketAsync(ActiveTickets ticket)
+    public async Task<ActiveTickets?> UpdateActiveTicketAsync(ActiveTickets ticket)
     {
-        throw new NotImplementedException();
+        try
+        {
+            _context.Update(ticket);
+            await _context.SaveChangesAsync();
+            return ticket;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     public async Task<ActiveTickets?> DeleteActiveTicketAsync(int id)

@@ -1,3 +1,5 @@
+@model TicketHistory
+
 @{
     Layout = "_Layout";
     ViewBag.Title = "Pending Tickets";
@@ -11,41 +13,37 @@
         <div class="card-body">
             <dl class="row">
                 <dt class="col-sm-3">ID:</dt>
-                <dd class="col-sm-9">@ViewBag.Ticket.Id</dd>
+                <dd class="col-sm-9">@Model.Id</dd>
 
                 <dt class="col-sm-3">Name:</dt>
-                <dd class="col-sm-9">@ViewBag.Ticket.Name</dd>
+                <dd class="col-sm-9">@Model.Name</dd>
 
                 <dt class="col-sm-3">Service Type:</dt>
-                <dd class="col-sm-9">@ViewBag.Ticket.ServiceType</dd>
+                <dd class="col-sm-9">@Model.ServiceType</dd>
 
                 <dt class="col-sm-3">Priority:</dt>
-                @if(@ViewBag.Ticket.Priority == 1)
+                @if(@Model.Priority == 1)
                 {
                     <dd class="col-sm-9">Low</dd>
                 }
-                else if(@ViewBag.Ticket.Priority == 2)
+                else if(@Model.Priority == 2)
                 {
                     <dd class="col-sm-9">Medium</dd>
                 }
-                else if(@ViewBag.Ticket.Priority == 3)
+                else if(@Model.Priority == 3)
                 {
                     <dd class="col-sm-9">High</dd>
                 }
 
                 <dt class="col-sm-3">Created By:</dt>
-                <dd class="col-sm-9">@ViewBag.ticket.CreatedBy</dd>
+                <dd class="col-sm-9">@Model.CreatedBy</dd>
 
                 <dt class="col-sm-3">Date Created:</dt>
-                <dd class="col-sm-9">@ViewBag.ticket.DateCreated</dd>
+                <dd class="col-sm-9">@Model.DateCreated</dd>
                 
                 <dt class="col-sm-3">Description:</dt>
-                <dd class="col-sm-9">@ViewBag.ticket.Description</dd>
+                <dd class="col-sm-9">@Model.Description</dd>
             </dl>
         </div>
-    </div>
-    <div>
-        <a class="btn btn-primary mt-1" asp-route-id="@ViewBag.Ticket.Id" asp-controller="Ticket" asp-action="UpdateTicket">UpdateTicket</a>
-        <a class="btn btn-primary mt-1" asp-route-id="@ViewBag.Ticket.Id" asp-controller="Ticket" asp-action="CloseTicket">CloseTicket</a>
     </div>
 </div>

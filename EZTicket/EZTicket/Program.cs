@@ -13,6 +13,7 @@ builder.Services.AddDbContext<TicketContext>(options =>
 
 builder.Services.AddScoped<IActiveTicketRepository, ActiveTicketRepository>();
 builder.Services.AddScoped<IPendingTicketRepository, PendingTicketRepository>();
+builder.Services.AddScoped<ITicketHistoryRepository, TicketHistoryRepository>();
 
 builder.Services.AddIdentity<UserModel, IdentityRole>(options =>
 {
