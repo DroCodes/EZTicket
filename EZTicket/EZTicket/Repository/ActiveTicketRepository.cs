@@ -12,12 +12,12 @@ public class ActiveTicketRepository : IActiveTicketRepository
         _context = context;
     }
     
-    public async Task<List<ActiveTickets>> GetActiveTicketsAsync()
+    public async Task<List<ActiveTickets>?> GetActiveTicketsAsync()
     {
         try
         {
             var tickets = await _context.ActiveTickets.ToListAsync();
-            return tickets;
+            return tickets.Count > 0 ? tickets : null;
         }
         catch (Exception e)
         {

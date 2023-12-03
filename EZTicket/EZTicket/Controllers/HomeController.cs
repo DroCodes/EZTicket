@@ -1,24 +1,52 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using EZTicket.Models;
+using EZTicket.Repository;
+using EZTicket.Services;
 
 namespace EZTicket.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly TicketContext _context;
+    private readonly IActiveTicketRepository _activeTicketRepository;
+    private readonly IPendingTicketRepository _pendingTicketRepository;
 
-    public HomeController(ILogger<HomeController> logger, TicketContext ctx)
+    public HomeController(TicketContext ctx, IActiveTicketRepository activeTicketRepository, IPendingTicketRepository pendingTicketRepository)
     {
-        _logger = logger;
-        _context = ctx;
+        _pendingTicketRepository = pendingTicketRepository;
+        _activeTicketRepository = activeTicketRepository;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        ViewBag.PendingTickets = _context.PendingTickets.ToList();
-        ViewBag.ActiveTickets = _context.ActiveTickets.ToList();
+        var pending = await _pendingTicketRepository.GetPendingTicketsAsync();
+        var activeTickets = await _activeTicketRepository.GetActiveTicketsAsync();
+        
+        PendingTicketService pendingTicketService = new();
+
+        if (pending != null)
+        {
+            foreach (var ticket in pending)
+            {
+                pendingTicketService.AddTicket(ticket);
+            }
+        }
+        
+        ActiveTicketService activeTicketService = new();
+        
+        if (activeTickets != null)
+        {
+            foreach (var ticket in activeTickets)
+            {
+                activeTicketService.AddTicket(ticket);
+            }
+        }
+        
+        ViewBag.PendingTickets = pendingTicketService.GetTickets();
+        ViewBag.ActiveTickets = activeTicketService.GetTickets();
+        
+        // ViewBag.PendingTickets = _context.PendingTickets.ToList();
+        // ViewBag.ActiveTickets = _context.ActiveTickets.ToList();
         return View();
     }
 
