@@ -1,27 +1,26 @@
 using EZTicket.Models;
 using EZTicket.Repository;
 using Microsoft.AspNetCore.Mvc;
-using SQLitePCL;
 
 namespace EZTicket.Controllers;
 
 public class TicketController : Controller
 {
-    private readonly TicketContext _context;
     private readonly IPendingTicketRepository _pendingRepo;
     private readonly IActiveTicketRepository _activeRepo;
+    private readonly ITicketHistoryRepository _ticketHistoryRepo;
     
-    public TicketController(TicketContext context, IPendingTicketRepository pendingRepo, IActiveTicketRepository activeRepo)
+    public TicketController(IPendingTicketRepository pendingRepo, IActiveTicketRepository activeRepo, ITicketHistoryRepository ticketHistoryRepo)
     {
         _pendingRepo = pendingRepo;
         _activeRepo = activeRepo;
-        _context = context;
+        _ticketHistoryRepo = ticketHistoryRepo;
     }
     // GET
-    public IActionResult Ticket()
-    {
-        return View();
-    }
+    // public IActionResult Ticket()
+    // {
+    //     return View();
+    // }
 
     public IActionResult CreateTicket()
     {
@@ -91,21 +90,15 @@ public class TicketController : Controller
                 var result = await _activeRepo.AddActiveTicketAsync(assignedTicket);
 
                 await _pendingRepo.DeletePendingTicketAsync(id);
-
-                // transaction.Commit();
             }
             else
             {
-                // transaction.Rollback(); // Rollback if the ticket is not found
                 return NotFound();
             }
         }
         catch (Exception ex)
         {
-            // transaction.Rollback(); // Rollback in case of any exception
-            // Log the exception
             Console.WriteLine($"Error assigning ticket: {ex}");
-            // You might want to throw the exception again if you want to propagate it
         }
 
         return RedirectToAction("Index", "Home");
@@ -131,6 +124,7 @@ public class TicketController : Controller
         return View();
     }
     
+    [HttpGet]
     public async Task<IActionResult> UpdateTicket(int id)
     {
         try
@@ -143,11 +137,110 @@ public class TicketController : Controller
             }
             
             ViewBag.ticket = ticket;
+            return View("UpdateTicket", ticket);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
-        return RedirectToAction("ActiveTicket", "Ticket");
+        return View();
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> UpdateTicket(ActiveTickets ticket)
+    {
+        ticket.Name = Request.Form["Name"];
+        ticket.Description = Request.Form["Description"];
+        ticket.ServiceType = Request.Form["ServiceType"];
+        ticket.AssignedTo = Request.Form["AssignedTo"];
+        ticket.CreatedBy = Request.Form["CreatedBy"];
+        ticket.Priority = Convert.ToInt32(Request.Form["Priority"]);
+        ticket.DateCreated = Convert.ToDateTime(Request.Form["DateCreated"]);
+        ticket.DateUpdated = DateTime.Now;
+        
+        await _activeRepo.UpdateActiveTicketAsync(ticket);
+
+        return RedirectToAction("Index", "Home");
+    }
+    
+    public async Task<IActionResult> CloseTicket(int id)
+    {
+        try
+        {
+            var ticket = await _activeRepo.GetActiveTicketAsync(id);
+
+            if (ticket != null)
+            {
+                var closedTicket = new TicketHistory
+                {
+                    Id = ticket.Id,
+                    Name = ticket.Name,
+                    Description = ticket.Description,
+                    ServiceType = ticket.ServiceType,
+                    Priority = ticket.Priority,
+                    CreatedBy = ticket.CreatedBy,
+                    CompletedBy = User.Identity.Name,
+                    DateCreated = ticket.DateCreated,
+                    DateUpdated = DateTime.Now,
+                };
+
+                var result = await _ticketHistoryRepo.AddTicketHistoryAsync(closedTicket);
+
+                await _activeRepo.DeleteActiveTicketAsync(id);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error closing ticket: {ex}");
+        }
+
+        return RedirectToAction("Index", "Home");
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> TicketHistory()
+    {
+        try
+        {
+            var tickets = await _ticketHistoryRepo.GetTicketHistory();
+            
+            if (tickets == null)
+            {
+                return NotFound();
+            }
+            
+            ViewBag.ticketHistory = tickets;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        return View();
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> ClosedTicket(int id)
+    {
+        try
+        {
+            var ticket = await _ticketHistoryRepo.GetTicketHistoryAsync(id);
+            
+            if (ticket == null)
+            {
+                return NotFound();
+            }
+            
+            ViewBag.ticket = ticket;
+            return View("ClosedTicket", ticket);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+        return View();
     }
 }

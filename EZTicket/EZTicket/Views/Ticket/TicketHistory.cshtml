@@ -1,0 +1,57 @@
+@{
+    Layout = "_Layout";
+}
+
+<div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    Closed Tickets
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead class="bg-primary text-light">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Priority</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Assigned</th>
+                                    <th scope="col">Created</th>
+                                    <th scope="col">Updated</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (TicketHistory ticket in ViewBag.ticketHistory)
+                                {
+                                    <tr>
+                                        <th scope="row">@ticket.Id</th>
+                                        <td>@ticket.Name</td>
+                                        <td>
+                                            @switch (@ticket.Priority)
+                                            {
+                                                case 1:
+                                                    <span class="badge bg-info">Low</span>
+                                                    break;
+                                                case 2:
+                                                    <span class="badge bg-warning">Medium</span>
+                                                    break;
+                                                case 3:
+                                                    <span class="badge bg-danger">High</span>
+                                                    break;
+                                            }
+                                        </td>
+                                        <td>@ticket.ServiceType</td>
+                                        <td>@ticket.CompletedBy</td>
+                                        <td>@ticket.DateCreated</td>
+                                        <td>@ticket.DateUpdated</td>
+                                        <td><a asp-route-id="@ticket.Id" asp-controller="Ticket" asp-action="ClosedTicket" class="btn btn-primary">Open</a></td>
+                                    </tr>
+                                }
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>

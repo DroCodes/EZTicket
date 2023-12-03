@@ -1,0 +1,103 @@
+@{
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Update Service Ticket</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" asp-route-id="@ViewBag.Ticket.Id" asp-controller="Ticket" asp-action="UpdateTicket">
+                <dl class="row">
+                    <dt class="col-sm-3">ID:</dt>
+                    <dd class="col-sm-9">@ViewBag.ticket.Id</dd>
+
+                    <dt class="col-sm-3">Name:</dt>
+                    <dd class="col-sm-9">
+                        <input type="text" class="form-control" name="Name" value="@ViewBag.ticket.Name" required>
+                    </dd>
+
+                    <dt class="col-sm-3">Service Type:</dt>
+                    <dd class="col-sm-9">
+                        <select name="ServiceType">
+                            @if(@ViewBag.ticket.ServiceType == "Customer Service")
+                            {
+                                <option value="Customer Service" selected>Customer Service</option>
+                                <option value="Service">Service</option>
+                                <option value="Sales">Sales</option>
+                            } else if (@ViewBag.ticket.ServiceType == "Service")
+                            {
+                                <option value="Customer Service">Customer Service</option>
+                                <option value="Service" selected>Service</option>
+                                <option value="Sales">Sales</option>
+                            } else if (@ViewBag.ticket.ServiceType == "Sales")
+                            {
+                                <option value="Customer Service">Customer Service</option>
+                                <option value="Service">Service</option>
+                                <option value="Sales" selected>Sales</option>
+                            } else
+                            {
+                                <option value="Customer Service">Customer Service</option>
+                                <option value="Service">Service</option>
+                                <option value="Sales">Sales</option>
+                            }
+                        </select>
+                    </dd>
+
+                    <dt class="col-sm-3">Priority:</dt>
+                   <dd class="col-sm-9">
+                       <select name="priority">
+                           @if (@ViewBag.ticket.Priority == 1)
+                           {
+                               <option value="1" selected>Low</option>
+                               <option value="2">Medium</option>
+                               <option value="3">High</option>
+                           } else if (@ViewBag.ticket.Priority == 2) 
+                           {
+                               <option value="1">Low</option>
+                               <option value="2" selected>Medium</option>
+                               <option value="3">High</option>
+                           } else if (@ViewBag.ticket.Priority == 3)
+                           {
+                               <option value="1">Low</option>
+                               <option value="2">Medium</option>
+                               <option value="3" selected>High</option>
+                           } else 
+                           {
+                               <option value="1">Low</option>
+                               <option value="2">Medium</option>
+                               <option value="3">High</option>
+                           }
+                       </select>
+                   </dd>
+
+
+                    <dt class="col-sm-3">Created By:</dt>
+                    <dd class="col-sm-9">
+                        <input type="text" class="form-control" name="CreatedBy" value="@ViewBag.ticket.CreatedBy" readonly>
+                    </dd>
+
+                    <dt class="col-sm-3">Date Created:</dt>
+                    <dd class="col-sm-9">
+                        <input type="text" class="form-control" name="DateCreated" value="@ViewBag.ticket.DateCreated" readonly>
+                    </dd>
+
+                    <dt class="col-sm-3">Description:</dt>
+                    <dd class="col-sm-9">
+                        <textarea class="form-control" name="Description" rows="3">@ViewBag.ticket.Description</textarea>
+                    </dd>
+                    
+                    <dt class="d-none">Assigned To</dt>
+                    <dd class="d-none">
+                        <textarea class="form-control" name="AssignedTo" rows="3">@ViewBag.ticket.AssignedTo</textarea>
+                    </dd>                    
+                </dl>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Update Ticket</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
