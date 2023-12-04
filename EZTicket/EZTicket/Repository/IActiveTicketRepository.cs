@@ -9,4 +9,6 @@ public interface IActiveTicketRepository
     public Task<ActiveTickets> AddActiveTicketAsync(ActiveTickets ticket);
     public Task<ActiveTickets?> UpdateActiveTicketAsync(ActiveTickets ticket);
     public Task<ActiveTickets?> DeleteActiveTicketAsync(int id);
+    public Task<List<TicketNote>?> GetTicketNotesAsync(int id);
+    public Task<TicketNote?> AddTicketNoteAsync(int id, TicketNote note);
 }

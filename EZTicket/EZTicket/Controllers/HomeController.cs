@@ -38,7 +38,10 @@ public class HomeController : Controller
         {
             foreach (var ticket in activeTickets)
             {
-                activeTicketService.AddTicket(ticket);
+                if (!ticket.IsClosed)
+                {
+                    activeTicketService.AddTicket(ticket);
+                }
             }
         }
         

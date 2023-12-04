@@ -13,4 +13,9 @@ public class ActiveTickets
     public string AssignedTo { get; set; }
     public DateTime DateCreated { get; set; }
     public DateTime DateUpdated { get; set; }
+    public bool IsClosed { get; set; }
+    public string? CompletedBy { get; set; }
+    public DateTime? DateCompleted { get; set; }
+    public List<TicketNote>? Notes { get; set; }
+
 }

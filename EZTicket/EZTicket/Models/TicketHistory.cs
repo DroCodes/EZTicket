@@ -13,4 +13,7 @@ public class TicketHistory
     public string CompletedBy { get; set; }
     public DateTime DateCreated { get; set; }
     public DateTime DateUpdated { get; set; }
+    public DateTime DateCompleted { get; set; }
+    public string? Resolution { get; set; }
+    public List<TicketNote>? Notes { get; set; }
 }
