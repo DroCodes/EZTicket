@@ -70,7 +70,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var ticket in ViewBag.ActiveTickets)
+                                @foreach (ActiveTickets ticket in ViewBag.ActiveTickets)
                                 {
                                     <tr>
                                         <th scope="row">@ticket.Id</th>

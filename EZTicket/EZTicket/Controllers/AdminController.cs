@@ -1,5 +1,6 @@
 using EZTicket.Models;
 using EZTicket.Repository;
+using EZTicket.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -28,8 +29,34 @@ public class AdminController : Controller
             return RedirectToAction("Index", "Home");
         }
         
-        ViewBag.ActiveTickets = await _activeTicketRepository.GetActiveTicketsAsync();
-        ViewBag.PendingTickets = await _pendingTicketRepository.GetPendingTicketsAsync();
+        var pending = await _pendingTicketRepository.GetPendingTicketsAsync();
+        var activeTickets = await _activeTicketRepository.GetActiveTicketsAsync();
+        
+        PendingTicketService pendingTicketService = new();
+
+        if (pending != null)
+        {
+            foreach (var ticket in pending)
+            {
+                pendingTicketService.AddTicket(ticket);
+            }
+        }
+        
+        ActiveTicketService activeTicketService = new();
+        
+        if (activeTickets != null)
+        {
+            foreach (var ticket in activeTickets)
+            {
+                if (!ticket.IsClosed)
+                {
+                    activeTicketService.AddTicket(ticket);
+                }
+            }
+        }
+        
+        ViewBag.PendingTickets = pendingTicketService.GetTickets();
+        ViewBag.ActiveTickets = activeTicketService.GetTickets();
         
         return View();
     }
@@ -44,20 +71,6 @@ public class AdminController : Controller
     {
         var user = await _userManager.FindByIdAsync(id);
         await _userManager.DeleteAsync(user);
-        return RedirectToAction("UserManagement");
-    }
-    
-    public async Task<IActionResult> MakeAdmin(string id)
-    {
-        var user = await _userManager.FindByIdAsync(id);
-        await _userManager.AddToRoleAsync(user, "Admin");
-        return RedirectToAction("UserManagement");
-    }
-    
-    public async Task<IActionResult> RemoveAdmin(string id)
-    {
-        var user = await _userManager.FindByIdAsync(id);
-        await _userManager.RemoveFromRoleAsync(user, "Admin");
         return RedirectToAction("UserManagement");
     }
     

@@ -23,9 +23,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (TicketHistory ticket in ViewBag.ticketHistory)
+                                @foreach (ActiveTickets ticket in ViewBag.ticketHistory)
                                 {
-                                    <tr>
+                                    if (ticket.IsClosed)
+                                    {
+                                        <tr>
                                         <th scope="row">@ticket.Id</th>
                                         <td>@ticket.Name</td>
                                         <td>
@@ -48,6 +50,7 @@
                                         <td>@ticket.DateUpdated</td>
                                         <td><a asp-route-id="@ticket.Id" asp-controller="Ticket" asp-action="ClosedTicket" class="btn btn-primary">Open</a></td>
                                     </tr>
+                                    }
                                 }
                                 </tbody>
                         </table>

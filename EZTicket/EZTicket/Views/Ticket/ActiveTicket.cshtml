@@ -34,14 +34,36 @@
                 }
 
                 <dt class="col-sm-3">Created By:</dt>
-                <dd class="col-sm-9">@ViewBag.ticket.CreatedBy</dd>
+                <dd class="col-sm-9">@ViewBag.Ticket.CreatedBy</dd>
 
                 <dt class="col-sm-3">Date Created:</dt>
-                <dd class="col-sm-9">@ViewBag.ticket.DateCreated</dd>
+                <dd class="col-sm-9">@ViewBag.Ticket.DateCreated</dd>
                 
                 <dt class="col-sm-3">Description:</dt>
-                <dd class="col-sm-9">@ViewBag.ticket.Description</dd>
+                <dd class="col-sm-9">@ViewBag.Ticket.Description</dd>
             </dl>
+                <form method="post" asp-controller="Ticket" asp-action="AddNote" id="noteForm">
+                    <div class="mt-3" id="noteSection">
+                        @if (@ViewBag.Notes != null)
+                        {
+                            foreach (TicketNote note in @ViewBag.Notes)
+                            {
+                                <span>@note.UserName - @note.Created</span>
+                                <textarea class="form-control mt-2" placeholder="Enter your note...">@note.Note</textarea>
+                            }
+                        }
+                        else
+                        {
+                            <textarea class="form-control mt-2" placeholder="Enter your note..." name="Note"></textarea>
+                        }
+                        <input type="hidden" id="dynamicNotes" name="DynamicNotes" value="" />
+                        <input type="hidden" id="ticketId" name="id" value="@ViewBag.Ticket.Id"/>
+                    </div>
+                    <div>
+                        <button class="btn btn-secondary mt-2" type="button" onclick="addNoteField()">Add Note</button>
+                        <button class="btn btn-secondary mt-2" type="submit">Save Note</button>
+                    </div>
+                </form>
         </div>
     </div>
     <div>
@@ -49,3 +71,30 @@
         <a class="btn btn-primary mt-1" asp-route-id="@ViewBag.Ticket.Id" asp-controller="Ticket" asp-action="CloseTicket">CloseTicket</a>
     </div>
 </div>
+
+<script>
+    function addNoteField() {
+        var noteSection = document.getElementById('noteSection');
+
+        var textarea = document.createElement('textarea');
+        textarea.className = 'form-control mt-2';
+        textarea.placeholder = 'Enter your note...';
+        textarea.name = 'Note';
+
+        noteSection.appendChild(textarea);
+
+        updateDynamicNotes();
+    }
+
+    function updateDynamicNotes() {
+        var dynamicNotesInput = document.getElementById('dynamicNotes');
+        var dynamicNotes = [];
+
+        var dynamicTextAreas = document.querySelectorAll('textarea[name="Note"]');
+        dynamicTextAreas.forEach(function (textarea) {
+            dynamicNotes.push(textarea.value);
+        });
+
+        dynamicNotesInput.value = JSON.stringify(dynamicNotes);
+    }
+</script>

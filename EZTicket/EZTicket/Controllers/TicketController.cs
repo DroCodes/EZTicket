@@ -8,19 +8,12 @@ public class TicketController : Controller
 {
     private readonly IPendingTicketRepository _pendingRepo;
     private readonly IActiveTicketRepository _activeRepo;
-    private readonly ITicketHistoryRepository _ticketHistoryRepo;
     
-    public TicketController(IPendingTicketRepository pendingRepo, IActiveTicketRepository activeRepo, ITicketHistoryRepository ticketHistoryRepo)
+    public TicketController(IPendingTicketRepository pendingRepo, IActiveTicketRepository activeRepo)
     {
         _pendingRepo = pendingRepo;
         _activeRepo = activeRepo;
-        _ticketHistoryRepo = ticketHistoryRepo;
     }
-    // GET
-    // public IActionResult Ticket()
-    // {
-    //     return View();
-    // }
 
     public IActionResult CreateTicket()
     {
@@ -83,6 +76,7 @@ public class TicketController : Controller
                     Priority = ticket.Priority,
                     CreatedBy = ticket.CreatedBy,
                     AssignedTo = User.Identity.Name,
+                    IsClosed = false,
                     DateCreated = ticket.DateCreated,
                     DateUpdated = ticket.DateUpdated
                 };
@@ -115,7 +109,14 @@ public class TicketController : Controller
                 return NotFound();
             }
             
-            ViewBag.ticket = ticket;
+            var notes = await _activeRepo.GetTicketNotesAsync(id);
+
+            if (notes != null)
+            {
+                ViewBag.Notes = notes;
+            }
+            
+            ViewBag.Ticket = ticket;
         }
         catch (Exception e)
         {
@@ -171,22 +172,11 @@ public class TicketController : Controller
 
             if (ticket != null)
             {
-                var closedTicket = new TicketHistory
-                {
-                    Id = ticket.Id,
-                    Name = ticket.Name,
-                    Description = ticket.Description,
-                    ServiceType = ticket.ServiceType,
-                    Priority = ticket.Priority,
-                    CreatedBy = ticket.CreatedBy,
-                    CompletedBy = User.Identity.Name,
-                    DateCreated = ticket.DateCreated,
-                    DateUpdated = DateTime.Now,
-                };
+                ticket.IsClosed = true;
+                ticket.CompletedBy = User.Identity.Name;
+                ticket.DateCompleted = DateTime.Now;
 
-                var result = await _ticketHistoryRepo.AddTicketHistoryAsync(closedTicket);
-
-                await _activeRepo.DeleteActiveTicketAsync(id);
+                await _activeRepo.UpdateActiveTicketAsync(ticket);
             }
             else
             {
@@ -206,7 +196,7 @@ public class TicketController : Controller
     {
         try
         {
-            var tickets = await _ticketHistoryRepo.GetTicketHistory();
+            var tickets = await _activeRepo.GetActiveTicketsAsync();
             
             if (tickets == null)
             {
@@ -227,14 +217,11 @@ public class TicketController : Controller
     {
         try
         {
-            var ticket = await _ticketHistoryRepo.GetTicketHistoryAsync(id);
+            var ticket = await _activeRepo.GetActiveTicketAsync(id);
             
-            if (ticket == null)
-            {
-                return NotFound();
-            }
+            var notes = await _activeRepo.GetTicketNotesAsync(id);
             
-            ViewBag.ticket = ticket;
+            ViewBag.Notes = notes;
             return View("ClosedTicket", ticket);
         }
         catch (Exception e)
@@ -242,5 +229,38 @@ public class TicketController : Controller
             Console.WriteLine(e);
         }
         return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> AddNote()
+    {
+        try
+        {
+            var id = Convert.ToInt32(Request.Form["id"]);
+            var ticket = await _activeRepo.GetActiveTicketAsync(id);
+            
+            if (ticket == null)
+            {
+                Console.WriteLine("not found");
+                return NotFound();
+            }
+            
+            var note = new TicketNote
+            {
+                UserName = User.Identity.Name,
+                Note = Request.Form["Note"],
+                Created = DateTime.Now,
+                TicketId = id
+            };
+
+            await _activeRepo.AddTicketNoteAsync(id, note);
+            
+            return RedirectToAction("ActiveTicket", "Ticket", new {id = id});
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 }

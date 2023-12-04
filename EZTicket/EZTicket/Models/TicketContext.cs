@@ -13,11 +13,18 @@ public class TicketContext : IdentityDbContext<UserModel>
     public DbSet<UserModel> Users { get; set; }
     public DbSet<PendingTickets> PendingTickets { get; set; }
     public DbSet<ActiveTickets> ActiveTickets { get; set; }
-    public DbSet<TicketHistory> TicketHistory { get; set; }
+    // public DbSet<TicketHistory> TicketHistory { get; set; }
+    public DbSet<TicketNote> TicketNotes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<ActiveTickets>()
+            .HasMany(n => n.Notes)
+            .WithOne(n => n.ActiveTickets)
+            .HasForeignKey(n => n.TicketId)
+            .HasPrincipalKey(n => n.Id);
     }
     
     public static async Task CreateAdminUser(IServiceProvider serviceProvider)
@@ -31,6 +38,10 @@ public class TicketContext : IdentityDbContext<UserModel>
             string username = "admin";
             string pwd = "Password123!";
             string roleName = "Admin";
+            string emailAddress = "admin@email.com";
+            string phoneNumber = "1234567890";
+            string firstName = "Admin";
+            string lastName = "Admin";
 
             if (await roleManager.FindByNameAsync(roleName) == null)
             {
@@ -40,7 +51,7 @@ public class TicketContext : IdentityDbContext<UserModel>
 
             if (await userManager.FindByNameAsync(username) == null)
             {
-                UserModel user = new UserModel() { UserName = username };
+                UserModel user = new UserModel() { UserName = username, EmailAddress = emailAddress, PhoneNumber = phoneNumber, FirstName = firstName, LastName = lastName };
                 var result = await userManager.CreateAsync(user, pwd);
                 if (result.Succeeded)
                 {

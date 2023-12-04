@@ -90,4 +90,45 @@ public class ActiveTicketRepository : IActiveTicketRepository
             throw;
         }
     }
+
+    public async Task<List<TicketNote>?> GetTicketNotesAsync(int id)
+    {
+        try
+        {
+            var notes = await _context.TicketNotes.Where(n => n.TicketId == id).ToListAsync();
+            
+            return notes.Count > 0 ? notes : null;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public async Task<TicketNote?> AddTicketNoteAsync(int id, TicketNote note)
+    {
+        try
+        {
+            var ticket = await _context.ActiveTickets.FindAsync(id);
+            if (ticket == null)
+            {
+                return null;
+            }
+
+            var newNote = await _context.TicketNotes.AddAsync(note);
+            
+            ticket.Notes ??= new List<TicketNote>();
+            
+            ticket.Notes.Add(note);
+            await _context.SaveChangesAsync();
+            
+            return note;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

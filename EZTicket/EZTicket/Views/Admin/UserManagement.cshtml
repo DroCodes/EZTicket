@@ -15,6 +15,7 @@
                 <th scope="col">Email</th>
                 <th scope="col">Phone</th>
                 <th scope="col">Roles</th>
+                <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -25,6 +26,7 @@
                     <td>@user.UserName</td>
                     <td>@user.EmailAddress</td>
                     <td>@user.PhoneNumber</td>
+                    <td>Placeholder</td>
                     <td><a class="btn btn-danger" asp-route-id="@user.Id" asp-controller="Admin" asp-action="DeleteUser">Delete User</a></td>
                 </tr>
             }
