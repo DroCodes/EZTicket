@@ -1,5 +1,6 @@
 using EZTicket.Models;
 using EZTicket.Repository;
+using EZTicket.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EZTicket.Controllers;
@@ -265,5 +266,41 @@ public class TicketController : Controller
             Console.WriteLine(e);
             throw;
         }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> UserDashboard()
+    {
+        try
+        {
+            var user = User.Identity.Name;
+            var tickets = await _activeRepo.GetActiveTicketsAsync();
+            
+            if (tickets == null)
+            {
+                return NotFound();
+            }
+
+            var activeTicket = new ActiveTicketService();
+
+            foreach (var ticket in tickets)
+            {
+                if (ticket.AssignedTo == user)
+                {
+                    activeTicket.AddTicket(ticket);
+                }
+            }
+            
+            ViewBag.activeTickets = activeTicket.GetTickets();
+            
+            return View();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            RedirectToAction("Index", "Home");
+        }
+
+        return View();
     }
 }
