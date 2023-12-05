@@ -1,5 +1,6 @@
 using EZTicket.Models;
 using EZTicket.Repository;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,7 +14,6 @@ builder.Services.AddDbContext<TicketContext>(options =>
 
 builder.Services.AddScoped<IActiveTicketRepository, ActiveTicketRepository>();
 builder.Services.AddScoped<IPendingTicketRepository, PendingTicketRepository>();
-// builder.Services.AddScoped<ITicketHistoryRepository, TicketHistoryRepository>();
 
 builder.Services.AddIdentity<UserModel, IdentityRole>(options =>
 {
@@ -29,6 +29,13 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.SignIn.RequireConfirmedEmail = false;
     options.SignIn.RequireConfirmedAccount = false;
 });
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+        options.SlidingExpiration = true;
+    });
 
 var app = builder.Build();
 

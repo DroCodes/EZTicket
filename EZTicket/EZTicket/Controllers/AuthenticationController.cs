@@ -102,4 +102,11 @@ public class AuthenticationController : Controller
 
         return View(registerModel);
     }
+
+    [HttpPost]
+    public async Task<IActionResult> LogOut()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToAction("Login", "Authentication");
+    }
 }

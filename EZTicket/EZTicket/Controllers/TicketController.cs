@@ -252,8 +252,11 @@ public class TicketController : Controller
                 Created = DateTime.Now,
                 TicketId = id
             };
+            
+            ticket.DateUpdated = DateTime.Now;
 
             await _activeRepo.AddTicketNoteAsync(id, note);
+            await _activeRepo.UpdateActiveTicketAsync(ticket);
             
             return RedirectToAction("ActiveTicket", "Ticket", new {id = id});
         }
