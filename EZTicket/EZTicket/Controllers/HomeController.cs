@@ -44,12 +44,13 @@ public class HomeController : Controller
                 }
             }
         }
+
+        var sort = new InsertionSort();
+        var sortedTickets = sort.InsertionSortByDate(activeTicketService.GetTickets());
         
         ViewBag.PendingTickets = pendingTicketService.GetTickets();
-        ViewBag.ActiveTickets = activeTicketService.GetTickets();
+        ViewBag.ActiveTickets = sortedTickets;
         
-        // ViewBag.PendingTickets = _context.PendingTickets.ToList();
-        // ViewBag.ActiveTickets = _context.ActiveTickets.ToList();
         return View();
     }
 

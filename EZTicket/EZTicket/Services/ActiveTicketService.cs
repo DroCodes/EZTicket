@@ -5,7 +5,7 @@ namespace EZTicket.Services;
 
 public class ActiveTicketService
 {
-    private ActiveTicketNode _head = null;
+    private ActiveTicketNode? _head = null;
     
     public ActiveTicketService()
     {
@@ -24,10 +24,11 @@ public class ActiveTicketService
             Ticket = ticket,
             Next = _head
         };
-
+    
         _head = newNode;
     }
-
+    
+    
     public ActiveTickets RemoveTicket()
     {
         if (IsEmpty())

@@ -1,3 +1,6 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<UserModel> signInManager
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,17 +28,28 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="CreateTicket">Create Ticket</a>
                     </li>
-                     <li class="nav-item">
-                         <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="TicketHistory">Ticket History</a>
-                     </li>                   
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="UserManagement">UserManagement</a>
-                    </li>    
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="TicketHistory">Ticket History</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="UserManagement">User Management</a>
+                    </li>
                 </ul>
+                @if (signInManager.IsSignedIn(User))
+                {
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <form method="post" asp-action="LogOut" asp-controller="Authentication" asp-area="">
+                                <button class="nav-link text-dark" type="submit">Log Out</button>
+                            </form>
+                        </li>
+                    </ul>
+                }
             </div>
         </div>
     </nav>
 </header>
+
 <div class="container">
     <main role="main" class="pb-3">
         @RenderBody()

@@ -54,9 +54,12 @@ public class AdminController : Controller
                 }
             }
         }
+
+        var sort = new InsertionSort();
+        var sortedTickets = sort.InsertionSortByDate(activeTicketService.GetTickets());
         
         ViewBag.PendingTickets = pendingTicketService.GetTickets();
-        ViewBag.ActiveTickets = activeTicketService.GetTickets();
+        ViewBag.ActiveTickets = sortedTickets;
         
         return View();
     }
