@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace EZTicket.Models;
 
+// Model for Login Page
 public class LoginModel
 {
     [Required(ErrorMessage = "Username is required")]

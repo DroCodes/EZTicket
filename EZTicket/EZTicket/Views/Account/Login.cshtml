@@ -1,9 +1,9 @@
 @model LoginModel
 @{
-    Layout = "_Layout";
+    Layout = "_LoginLayout";
     ViewBag.Title = "Login";
 }
-
+@* Login page *@
 <div class="container-fluid">
     <form class="w-50 m-auto align-middle" method="post" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>

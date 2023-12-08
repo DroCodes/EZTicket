@@ -2,8 +2,8 @@
 @{
     Layout = "_AdminLayout";
 }
-
-<a class="btn btn-primary" asp-controller="Authentication" asp-action="RegisterUser">Register New User</a>
+@* Admin can see all users and delete if necessary. there is also a button to create a new user *@
+<a class="btn btn-primary" asp-controller="Account" asp-action="RegisterUser">Register New User</a>
 
 <div class="container mt-4">
     <h2>User Table</h2>
@@ -19,17 +19,18 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var user in Model)
-            {
-                <tr>
-                    <td>@user.FirstName @user.LastName </td>
-                    <td>@user.UserName</td>
-                    <td>@user.EmailAddress</td>
-                    <td>@user.PhoneNumber</td>
-                    <td>Placeholder</td>
-                    <td><a class="btn btn-danger" asp-route-id="@user.Id" asp-controller="Admin" asp-action="DeleteUser">Delete User</a></td>
-                </tr>
-            }
+        @* Loop to fill out a table of users *@
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.FirstName @user.LastName </td>
+                <td>@user.UserName</td>
+                <td>@user.EmailAddress</td>
+                <td>@user.PhoneNumber</td>
+                <td>Placeholder</td>
+                <td><a class="btn btn-danger" asp-route-id="@user.Id" asp-controller="Admin" asp-action="DeleteUser">Delete User</a></td>
+            </tr>
+        }
         </tbody>
     </table>
 </div>

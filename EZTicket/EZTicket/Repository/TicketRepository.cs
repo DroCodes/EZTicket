@@ -3,20 +3,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EZTicket.Repository;
 
-public class ActiveTicketRepository : IActiveTicketRepository
+public class TicketRepository : ITicketRepository
 {
     private readonly TicketContext _context;
     
-    public ActiveTicketRepository(TicketContext context)
+    public TicketRepository(TicketContext context)
     {
         _context = context;
     }
     
-    public async Task<List<ActiveTickets>?> GetActiveTicketsAsync()
+    // returns all active tickets as a List
+    public async Task<List<Ticket>?> GetTicketsAsync()
     {
         try
         {
-            var tickets = await _context.ActiveTickets.ToListAsync();
+            var tickets = await _context.Ticket.ToListAsync();
             return tickets.Count > 0 ? tickets : null;
         }
         catch (Exception e)
@@ -26,11 +27,12 @@ public class ActiveTicketRepository : IActiveTicketRepository
         }
     }
 
-    public async Task<ActiveTickets?> GetActiveTicketAsync(int id)
+    // returns a single active ticket by id
+    public async Task<Ticket?> GetTicketAsync(int id)
     {
         try
         {
-            var ticket = await _context.ActiveTickets.FindAsync(id); 
+            var ticket = await _context.Ticket.FindAsync(id); 
             return ticket;
         }
         catch (Exception e)
@@ -40,11 +42,12 @@ public class ActiveTicketRepository : IActiveTicketRepository
         }
     }
 
-    public async Task<ActiveTickets> AddActiveTicketAsync(ActiveTickets ticket)
+    // adds a new active ticket
+    public async Task<Ticket> AddTicketAsync(Ticket ticket)
     {
         try
         {
-            await _context.ActiveTickets.AddAsync(ticket);
+            await _context.Ticket.AddAsync(ticket);
             await _context.SaveChangesAsync();
             return ticket;
         }
@@ -55,7 +58,8 @@ public class ActiveTicketRepository : IActiveTicketRepository
         }
     }
 
-    public async Task<ActiveTickets?> UpdateActiveTicketAsync(ActiveTickets ticket)
+    // Updates an active ticket
+    public async Task<Ticket?> UpdateTicketAsync(Ticket ticket)
     {
         try
         {
@@ -70,17 +74,18 @@ public class ActiveTicketRepository : IActiveTicketRepository
         }
     }
 
-    public async Task<ActiveTickets?> DeleteActiveTicketAsync(int id)
+    // Deletes an active ticket
+    public async Task<Ticket?> DeleteTicketAsync(int id)
     {
         try
         {
-            var ticket = await _context.ActiveTickets.FindAsync(id);
+            var ticket = await _context.Ticket.FindAsync(id);
 
             if (ticket == null)
             {
                 return null;
             }
-            _context.ActiveTickets.Remove(ticket);
+            _context.Ticket.Remove(ticket);
             await _context.SaveChangesAsync();
             return ticket;
         }
@@ -91,6 +96,7 @@ public class ActiveTicketRepository : IActiveTicketRepository
         }
     }
 
+    // returns all ticket notes for a given ticket id
     public async Task<List<TicketNote>?> GetTicketNotesAsync(int id)
     {
         try
@@ -106,11 +112,12 @@ public class ActiveTicketRepository : IActiveTicketRepository
         }
     }
 
+    // Adds new ticket note to a given ticket id
     public async Task<TicketNote?> AddTicketNoteAsync(int id, TicketNote note)
     {
         try
         {
-            var ticket = await _context.ActiveTickets.FindAsync(id);
+            var ticket = await _context.Ticket.FindAsync(id);
             if (ticket == null)
             {
                 return null;

@@ -2,6 +2,7 @@
 @inject SignInManager<UserModel> signInManager
 @inject UserManager<UserModel> userManager
 
+@* Main Layout for the app *@
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,11 +31,12 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="CreateTicket">Create Ticket</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="UserDashboard">MyTickets</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="UserDashboard">My Tickets</a>
                     </li>
                     <li class="nav-item">
                          <a class="nav-link text-dark" asp-area="" asp-controller="Ticket" asp-action="TicketHistory">Ticket History</a>
                     </li>   
+                    @* Checks if user is an admin, if so, the admin button will be displayed in the nav*@
                     @if (signInManager.IsSignedIn(User))
                    {
                        var user = await userManager.GetUserAsync(User);
@@ -48,12 +50,13 @@
                        }
                    }
                 </ul>
-
+                
+                @* Checks if the user is signed in, if so then a logout button is displayed *@
                 @if (signInManager.IsSignedIn(User))
                 {
                     <ul class="navbar-nav">
                         <li class="nav-item ml-auto">
-                            <form method="post" asp-action="LogOut" asp-controller="Authentication" asp-area="">
+                            <form method="post" asp-action="LogOut" asp-controller="Account" asp-area="">
                                 <button class="nav-link text-dark" type="submit">Log Out</button>
                             </form>
                         </li>
@@ -70,11 +73,6 @@
     </main>
 </div>
 
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2023 - EZTicket - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
-</footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>

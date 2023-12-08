@@ -3,6 +3,7 @@
     ViewBag.Title = "User Dashboard";
 }
 
+@* Dashboard where user can see all of their tickets *@
 <div class="col-md-8 m-auto">
     <div class="card">
         <div class="card-header bg-primary text-white">
@@ -24,7 +25,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (ActiveTickets ticket in ViewBag.ActiveTickets)
+                        @foreach (Ticket ticket in ViewBag.ActiveTickets)
                         {
                             <tr>
                                 <th scope="row">@ticket.Id</th>

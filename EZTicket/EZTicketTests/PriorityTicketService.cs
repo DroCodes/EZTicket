@@ -5,11 +5,11 @@ using Xunit.Abstractions;
 
 namespace EZTicketTests;
 
-public class PendingTicketServiceTests
+public class PriorityTicketService
 {
     private readonly ITestOutputHelper _testOutputHelper;
     
-    public PendingTicketServiceTests(ITestOutputHelper testOutputHelper)
+    public PriorityTicketService(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
     }
@@ -18,7 +18,7 @@ public class PendingTicketServiceTests
     public void GetTickets_EmptyQueue_ReturnsEmptyList()
     {
         // Arrange
-        PendingTicketService ticketService = new PendingTicketService();
+        EZTicket.Services.PriorityTicketService ticketService = new EZTicket.Services.PriorityTicketService();
 
         // Act
         var tickets = ticketService.GetTickets();
@@ -31,7 +31,7 @@ public class PendingTicketServiceTests
     public void Peek_EmptyQueue_ThrowsInvalidOperationException()
     {
         // Arrange
-        PendingTicketService ticketService = new PendingTicketService();
+        EZTicket.Services.PriorityTicketService ticketService = new EZTicket.Services.PriorityTicketService();
 
         // Act and Assert
         Assert.Throws<InvalidOperationException>(() => ticketService.Peek());
@@ -41,7 +41,7 @@ public class PendingTicketServiceTests
     public void IsEmpty_EmptyQueue_ReturnsTrue()
     {
         // Arrange
-        PendingTicketService ticketService = new PendingTicketService();
+        EZTicket.Services.PriorityTicketService ticketService = new EZTicket.Services.PriorityTicketService();
 
         // Act
         bool isEmpty = ticketService.isEmpty();
@@ -54,7 +54,7 @@ public class PendingTicketServiceTests
     public void AddTicket_NullTicket_DoesNotAddToQueue()
     {
         // Arrange
-        PendingTicketService ticketService = new PendingTicketService();
+        var ticketService = new EZTicket.Services.PriorityTicketService();
 
         // Act
         ticketService.AddTicket(null);
@@ -67,8 +67,8 @@ public class PendingTicketServiceTests
     public void AddTicket_Priority3_AddsToBeginningOfQueue()
     {
         // Arrange
-        PendingTicketService ticketService = new PendingTicketService();
-        PendingTickets ticket = new PendingTickets { Priority = 3 };
+        var ticketService = new EZTicket.Services.PriorityTicketService();
+        var ticket = new Ticket() { Priority = 3 };
 
         // Act
         ticketService.AddTicket(ticket);
@@ -81,9 +81,9 @@ public class PendingTicketServiceTests
     public void AddTicket_Priority2_AddsToSecondPositionInQueue()
     {
         // Arrange
-        PendingTicketService ticketService = new PendingTicketService();
-        PendingTickets ticket1 = new PendingTickets { Priority = 1 };
-        PendingTickets ticket2 = new PendingTickets { Priority = 2 };
+        EZTicket.Services.PriorityTicketService ticketService = new EZTicket.Services.PriorityTicketService();
+        var ticket1 = new Ticket() { Priority = 1 };
+        var ticket2 = new Ticket() { Priority = 2 };
 
         // Act
         ticketService.AddTicket(ticket1);
@@ -97,8 +97,8 @@ public class PendingTicketServiceTests
     public void AddTicket_Priority1_AddsToEndOfQueue()
     {
         // Arrange
-        PendingTicketService ticketService = new PendingTicketService();
-        PendingTickets ticket = new PendingTickets { Priority = 1 };
+        var ticketService = new EZTicket.Services.PriorityTicketService();
+        var ticket = new Ticket { Priority = 1 };
 
         // Act
         ticketService.AddTicket(ticket);
@@ -111,7 +111,7 @@ public class PendingTicketServiceTests
     public void RemoveTicket_EmptyQueue_ThrowsListEmptyException()
     {
         // Arrange
-        PendingTicketService ticketService = new PendingTicketService();
+        var ticketService = new EZTicket.Services.PriorityTicketService();
 
         // Act and Assert
         Assert.Throws<ListEmptyException>(() => ticketService.RemoveTicket());
@@ -121,8 +121,8 @@ public class PendingTicketServiceTests
     public void RemoveTicket_NonEmptyQueue_RemovesAndReturnsFirstTicket()
     {
         // Arrange
-        PendingTicketService ticketService = new PendingTicketService();
-        PendingTickets ticket = new PendingTickets { Priority = 1 };
+        var ticketService = new EZTicket.Services.PriorityTicketService();
+        var ticket = new Ticket { Priority = 1 };
         ticketService.AddTicket(ticket);
 
         // Act
