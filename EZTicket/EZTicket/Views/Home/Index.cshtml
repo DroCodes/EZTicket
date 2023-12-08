@@ -2,7 +2,8 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-
+@* Home Page *@
+@* This will display two tables, one for pending tickets and one for active tickets *@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-4">
@@ -21,27 +22,31 @@
                             </tr>
                         </thead>
                         <tbody>
+                        @* Fills out pending ticket table *@
                         @foreach (var ticket in ViewBag.PendingTickets)
                         {
-                            <tr>
-                                <th scope="row">@ticket.Id</th>
-                                <td>@ticket.Name</td>
-                                <td>
-                                    @switch (@ticket.Priority)
-                                    {
-                                        case 1:
-                                            <span class="badge bg-info">Low</span>
-                                            break;
-                                        case 2:
-                                            <span class="badge bg-warning">Medium</span>
-                                            break;
-                                        case 3:
-                                            <span class="badge bg-danger">High</span>
-                                            break;
-                                    }
-                                </td>
-                                <td><a asp-route-id="@ticket.Id" asp-controller="Ticket" asp-action="PendingTicket" class="btn btn-primary">Open</a></td>
-                            </tr>
+                            @if (ticket.IsPending)
+                            {
+                                <tr>
+                                    <th scope="row">@ticket.Id</th>
+                                    <td>@ticket.Name</td>
+                                    <td>
+                                        @switch (@ticket.Priority)
+                                        {
+                                            case 1:
+                                                <span class="badge bg-info">Low</span>
+                                                break;
+                                            case 2:
+                                                <span class="badge bg-warning">Medium</span>
+                                                break;
+                                            case 3:
+                                                <span class="badge bg-danger">High</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td><a asp-route-id="@ticket.Id" asp-controller="Ticket" asp-action="PendingTicket" class="btn btn-primary">Open</a></td>
+                                </tr>
+                            }
                         }
                         </tbody>
                     </table>
@@ -70,33 +75,37 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (ActiveTickets ticket in ViewBag.ActiveTickets)
+                            @* Fills out Active ticket table *@
+                            @foreach (Ticket ticket in ViewBag.ActiveTickets)
+                            {
+                                if (!ticket.IsPending && !ticket.IsClosed)
                                 {
                                     <tr>
-                                        <th scope="row">@ticket.Id</th>
-                                        <td>@ticket.Name</td>
-                                        <td>
-                                            @switch (@ticket.Priority)
-                                            {
-                                                case 1:
-                                                    <span class="badge bg-info">Low</span>
-                                                    break;
-                                                case 2:
-                                                    <span class="badge bg-warning">Medium</span>
-                                                    break;
-                                                case 3:
-                                                    <span class="badge bg-danger">High</span>
-                                                    break;
-                                            }
-                                        </td>
-                                        <td>@ticket.ServiceType</td>
-                                        <td>@ticket.AssignedTo</td>
-                                        <td>@ticket.DateCreated</td>
-                                        <td>@ticket.DateUpdated</td>
-                                        <td><a asp-route-id="@ticket.Id" asp-controller="Ticket" asp-action="ActiveTicket" class="btn btn-primary">Open</a></td>
-                                    </tr>
+                                    <th scope="row">@ticket.Id</th>
+                                    <td>@ticket.Name</td>
+                                    <td>
+                                        @switch (@ticket.Priority)
+                                        {
+                                            case 1:
+                                                <span class="badge bg-info">Low</span>
+                                                break;
+                                            case 2:
+                                                <span class="badge bg-warning">Medium</span>
+                                                break;
+                                            case 3:
+                                                <span class="badge bg-danger">High</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>@ticket.ServiceType</td>
+                                    <td>@ticket.AssignedTo</td>
+                                    <td>@ticket.DateCreated</td>
+                                    <td>@ticket.DateUpdated</td>
+                                    <td><a asp-route-id="@ticket.Id" asp-controller="Ticket" asp-action="ActiveTicket" class="btn btn-primary">Open</a></td>
+                                </tr>
                                 }
-                                </tbody>
+                            }
+                            </tbody>
                         </table>
                     </div>
                 </div>

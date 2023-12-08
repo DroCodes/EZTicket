@@ -1,6 +1,6 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<UserModel> signInManager
-
+@* Layout for the admin page. This Layout has a different nav section *@
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,11 +35,12 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="UserManagement">User Management</a>
                     </li>
                 </ul>
+                @* Checks if the user is signed in, if so then a logout button is displayed *@
                 @if (signInManager.IsSignedIn(User))
                 {
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <form method="post" asp-action="LogOut" asp-controller="Authentication" asp-area="">
+                            <form method="post" asp-action="LogOut" asp-controller="Account" asp-area="">
                                 <button class="nav-link text-dark" type="submit">Log Out</button>
                             </form>
                         </li>
@@ -55,12 +56,6 @@
         @RenderBody()
     </main>
 </div>
-
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2023 - EZTicket - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
-</footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>

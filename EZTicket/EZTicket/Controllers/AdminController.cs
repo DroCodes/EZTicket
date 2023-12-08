@@ -1,106 +1,109 @@
 using EZTicket.Models;
 using EZTicket.Repository;
 using EZTicket.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace EZTicket.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class AdminController : Controller
 {
-    private readonly IActiveTicketRepository _activeTicketRepository;
-    private readonly IPendingTicketRepository _pendingTicketRepository;
+    private readonly ITicketRepository _repo;
     private readonly UserManager<UserModel> _userManager;
-    
-    public AdminController(IActiveTicketRepository activeRepo, IPendingTicketRepository pendingRepo, UserManager<UserModel> userManager)
+
+    public AdminController(ITicketRepository repo, UserManager<UserModel> userManager)
     {
         _userManager = userManager;
-        _activeTicketRepository = activeRepo;
-        _pendingTicketRepository = pendingRepo;
+        _repo = repo;
     }
+
     // GET
     public async Task<IActionResult> Admin()
     {
-        var getUser = await _userManager.GetUserAsync(User);
-        var verifyUser = await _userManager.IsInRoleAsync(getUser, "Admin");
-        if (!verifyUser)
+        try
         {
-            return RedirectToAction("Index", "Home");
-        }
-        
-        var pending = await _pendingTicketRepository.GetPendingTicketsAsync();
-        var activeTickets = await _activeTicketRepository.GetActiveTicketsAsync();
-        
-        PendingTicketService pendingTicketService = new();
+            // gets all pending and active tickets from the database
+            // var pending = await _pendingTicketRepository.GetPendingTicketsAsync();
+            var tickets = await _repo.GetTicketsAsync();
 
-        if (pending != null)
-        {
-            foreach (var ticket in pending)
+            // adds the tickets to the services which is a priority queue to sort the tickets
+            PriorityTicketService pendingTicketQueue = new();
+            PriorityTicketService activeTicketQueue = new();
+
+            if (tickets != null)
             {
-                pendingTicketService.AddTicket(ticket);
-            }
-        }
-        
-        ActiveTicketService activeTicketService = new();
-        
-        if (activeTickets != null)
-        {
-            foreach (var ticket in activeTickets)
-            {
-                if (!ticket.IsClosed)
+                foreach (var ticket in tickets)
                 {
-                    activeTicketService.AddTicket(ticket);
+                    if (!ticket.IsClosed)
+                    {
+                        if (ticket.IsPending)
+                        {
+                            pendingTicketQueue.AddTicket(ticket);
+                        }
+                        else
+                        {
+                            activeTicketQueue.AddTicket(ticket);
+
+                        }
+                    }
                 }
             }
+
+            ViewBag.PendingTickets = pendingTicketQueue.GetTickets();
+            ViewBag.ActiveTickets = activeTicketQueue.GetTickets();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
         }
 
-        var sort = new InsertionSort();
-        var sortedTickets = sort.InsertionSortByDate(activeTicketService.GetTickets());
-        
-        ViewBag.PendingTickets = pendingTicketService.GetTickets();
-        ViewBag.ActiveTickets = sortedTickets;
-        
         return View();
     }
-    
+
     public async Task<IActionResult> UserManagement()
     {
+        // gets all users from the database
         var users = await _userManager.Users.ToListAsync();
         return View(users);
     }
-    
+
     public async Task<IActionResult> DeleteUser(string id)
     {
-        var user = await _userManager.FindByIdAsync(id);
-        await _userManager.DeleteAsync(user);
+        // deletes the user from the database
+        try
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                return RedirectToAction("UserManagement");
+            }
+
+            await _userManager.DeleteAsync(user);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
         return RedirectToAction("UserManagement");
     }
-    
-    public async Task<IActionResult> DeleteActiveTicket(int id)
+
+    public async Task<IActionResult> DeleteTicket(int id)
     {
+        // deletes the active ticket from the database
         try
         {
-            await _activeTicketRepository.DeleteActiveTicketAsync(id);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        return RedirectToAction("Admin");
-    }
-    
-    public async Task<IActionResult> DeletePendingTicket(int id)
-    {
-        try
-        {
-            await _pendingTicketRepository.DeletePendingTicketAsync(id);
+            await _repo.DeleteTicketAsync(id);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
         }
+
         return RedirectToAction("Admin");
     }
 }

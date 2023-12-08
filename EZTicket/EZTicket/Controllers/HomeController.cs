@@ -1,61 +1,48 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using EZTicket.Models;
 using EZTicket.Repository;
 using EZTicket.Services;
-
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 namespace EZTicket.Controllers;
 
+[Authorize]
 public class HomeController : Controller
 {
-    private readonly IActiveTicketRepository _activeTicketRepository;
-    private readonly IPendingTicketRepository _pendingTicketRepository;
+    private readonly ITicketRepository _ticketRepository;
 
-    public HomeController(TicketContext ctx, IActiveTicketRepository activeTicketRepository, IPendingTicketRepository pendingTicketRepository)
+    public HomeController(ITicketRepository ticketRepository)
     {
-        _pendingTicketRepository = pendingTicketRepository;
-        _activeTicketRepository = activeTicketRepository;
+        _ticketRepository = ticketRepository;
     }
-
+    
     public async Task<IActionResult> Index()
     {
-        var pending = await _pendingTicketRepository.GetPendingTicketsAsync();
-        var activeTickets = await _activeTicketRepository.GetActiveTicketsAsync();
+        // Get all active tickets
+        var tickets = await _ticketRepository.GetTicketsAsync();
         
-        PendingTicketService pendingTicketService = new();
+        // Add pending tickets to pending ticket service which is a priority queue
+        PriorityTicketService pendingTicketQueue = new();
+        PriorityTicketService activeTicketQueue = new();
 
-        if (pending != null)
+        if (tickets != null)
         {
-            foreach (var ticket in pending)
+            foreach (var ticket in tickets)
             {
-                pendingTicketService.AddTicket(ticket);
-            }
-        }
-        
-        ActiveTicketService activeTicketService = new();
-        
-        if (activeTickets != null)
-        {
-            foreach (var ticket in activeTickets)
-            {
-                if (!ticket.IsClosed)
+                if (ticket.IsPending)
                 {
-                    activeTicketService.AddTicket(ticket);
+                    pendingTicketQueue.AddTicket(ticket);
+                }
+                else
+                {
+                    activeTicketQueue.AddTicket(ticket);
                 }
             }
         }
-
-        var sort = new InsertionSort();
-        var sortedTickets = sort.InsertionSortByDate(activeTicketService.GetTickets());
         
-        ViewBag.PendingTickets = pendingTicketService.GetTickets();
-        ViewBag.ActiveTickets = sortedTickets;
+        ViewBag.PendingTickets = pendingTicketQueue.GetTickets();
+        ViewBag.ActiveTickets = activeTicketQueue.GetTickets();
         
-        return View();
-    }
-
-    public IActionResult Privacy()
-    {
         return View();
     }
 }

@@ -2,16 +2,19 @@ using EZTicket.Models;
 
 namespace EZTicket.Services;
 
+// Node for Ticket 
 public class InsertionSort
 {
-    public List<ActiveTickets> InsertionSortByDate(List<ActiveTickets> tickets)
+    // Sorts the list by date
+    public List<Ticket> SortByDate(List<Ticket> tickets)
     {
         for (int i = 1; i < tickets.Count; i++)
         {
-            ActiveTickets key = tickets[i];
+            Ticket key = tickets[i];
             int j = i - 1;
 
-            while (j >= 0 && tickets[j].DateUpdated > key.DateUpdated)
+            // Change the condition to sort from newest to oldest
+            while (j >= 0 && tickets[j].DateUpdated < key.DateUpdated)
             {
                 tickets[j + 1] = tickets[j];
                 j = j - 1;
@@ -22,4 +25,5 @@ public class InsertionSort
 
         return tickets;
     }
+
 }

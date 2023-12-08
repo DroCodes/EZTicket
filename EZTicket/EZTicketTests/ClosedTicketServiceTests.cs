@@ -6,13 +6,13 @@ namespace EZTicketTests;
 
 using Xunit;
 
-public class ActiveTicketServiceTests
+public class ClosedTicketServiceTests
 {
     [Fact]
     public void IsEmpty_EmptyList_ReturnsTrue()
     {
         // Arrange
-        ActiveTicketService ticketService = new ActiveTicketService();
+        ClosedTicketService ticketService = new ClosedTicketService();
 
         // Act
         bool isEmpty = ticketService.IsEmpty();
@@ -25,8 +25,8 @@ public class ActiveTicketServiceTests
     public void AddTicket_AddOneTicket_ListIsNotEmpty()
     {
         // Arrange
-        ActiveTicketService ticketService = new ActiveTicketService();
-        ActiveTickets ticket = new ActiveTickets(/* Initialize your ticket object */);
+        ClosedTicketService ticketService = new ClosedTicketService();
+        Ticket ticket = new Ticket(/* Initialize your ticket object */);
 
         // Act
         ticketService.AddTicket(ticket);
@@ -40,7 +40,7 @@ public class ActiveTicketServiceTests
     public void RemoveTicket_EmptyList_ThrowsListEmptyException()
     {
         // Arrange
-        ActiveTicketService ticketService = new ActiveTicketService();
+        ClosedTicketService ticketService = new ClosedTicketService();
 
         // Act and Assert
         Assert.Throws<ListEmptyException>(() => ticketService.RemoveTicket());
@@ -50,12 +50,12 @@ public class ActiveTicketServiceTests
     public void RemoveTicket_NotEmptyList_ReturnsRemovedTicket()
     {
         // Arrange
-        ActiveTicketService ticketService = new ActiveTicketService();
-        ActiveTickets ticket = new ActiveTickets(/* Initialize your ticket object */);
+        ClosedTicketService ticketService = new ClosedTicketService();
+        Ticket ticket = new Ticket(/* Initialize your ticket object */);
         ticketService.AddTicket(ticket);
 
         // Act
-        ActiveTickets removedTicket = ticketService.RemoveTicket();
+        Ticket removedTicket = ticketService.RemoveTicket();
 
         // Assert
         Assert.Equal(ticket, removedTicket);
@@ -66,7 +66,7 @@ public class ActiveTicketServiceTests
     public void Peek_EmptyList_ThrowsListEmptyException()
     {
         // Arrange
-        ActiveTicketService ticketService = new ActiveTicketService();
+        ClosedTicketService ticketService = new ClosedTicketService();
 
         // Act and Assert
         Assert.Throws<ListEmptyException>(() => ticketService.Peek());

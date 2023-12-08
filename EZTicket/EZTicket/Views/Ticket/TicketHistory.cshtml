@@ -2,7 +2,8 @@
     Layout = "_Layout";
 }
 
-<div class="col-md-8">
+@* Displays table for all closed tickets *@
+<div class="col-md-8 m-auto">
             <div class="card">
                 <div class="card-header bg-primary text-white">
                     Closed Tickets
@@ -23,7 +24,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (ActiveTickets ticket in ViewBag.ticketHistory)
+                                @foreach (Ticket ticket in ViewBag.ticketHistory)
                                 {
                                     if (ticket.IsClosed)
                                     {

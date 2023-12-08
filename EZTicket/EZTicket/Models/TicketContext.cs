@@ -11,27 +11,26 @@ public class TicketContext : IdentityDbContext<UserModel>
     }
     
     public DbSet<UserModel> Users { get; set; }
-    public DbSet<PendingTickets> PendingTickets { get; set; }
-    public DbSet<ActiveTickets> ActiveTickets { get; set; }
-    // public DbSet<TicketHistory> TicketHistory { get; set; }
+    public DbSet<Ticket> Ticket { get; set; }
     public DbSet<TicketNote> TicketNotes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<ActiveTickets>()
+        // defines the relationship between Ticket and TicketNotes with active tickets as the parent and ticket notes as the child with a foreign key of TicketId
+        modelBuilder.Entity<Ticket>()
             .HasMany(n => n.Notes)
-            .WithOne(n => n.ActiveTickets)
+            .WithOne(n => n.Ticket)
             .HasForeignKey(n => n.TicketId)
             .HasPrincipalKey(n => n.Id);
     }
     
+    // creates the admin user if it does not exist
     public static async Task CreateAdminUser(IServiceProvider serviceProvider)
     {
         using (var scoped = serviceProvider.CreateScope())
         {
-            Console.WriteLine("Creating admin user");
             UserManager<UserModel> userManager = scoped.ServiceProvider.GetRequiredService<UserManager<UserModel>>();
             RoleManager<IdentityRole> roleManager = scoped.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
@@ -46,7 +45,6 @@ public class TicketContext : IdentityDbContext<UserModel>
             if (await roleManager.FindByNameAsync(roleName) == null)
             {
                 await roleManager.CreateAsync(new IdentityRole(roleName));
-                Console.WriteLine($"Created role {roleName}");
             }
 
             if (await userManager.FindByNameAsync(username) == null)
@@ -55,7 +53,6 @@ public class TicketContext : IdentityDbContext<UserModel>
                 var result = await userManager.CreateAsync(user, pwd);
                 if (result.Succeeded)
                 {
-                    Console.WriteLine("success");
                     await userManager.AddToRoleAsync(user, roleName);
                 }
             }

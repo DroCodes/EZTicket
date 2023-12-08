@@ -3,23 +3,25 @@ using EZTicket.Models;
 
 namespace EZTicket.Services;
 
-public class ActiveTicketService
+public class ClosedTicketService
 {
-    private ActiveTicketNode? _head = null;
+    private ClosedTicketNode? _head = null;
     
-    public ActiveTicketService()
+    public ClosedTicketService()
     {
         
     }
 
+    // Checks if the list is empty
     public bool IsEmpty()
     {
         return _head == null;
     }
 
-    public void AddTicket(ActiveTickets ticket)
+    // Adds a ticket to the list
+    public void AddTicket(Ticket ticket)
     {
-        ActiveTicketNode newNode = new ActiveTicketNode
+        ClosedTicketNode newNode = new ClosedTicketNode
         {
             Ticket = ticket,
             Next = _head
@@ -28,21 +30,22 @@ public class ActiveTicketService
         _head = newNode;
     }
     
-    
-    public ActiveTickets RemoveTicket()
+    // Removes a ticket from the list
+    public Ticket RemoveTicket()
     {
         if (IsEmpty())
         {
             throw new ListEmptyException("Active Ticket List is empty.");
         }
 
-        ActiveTickets removedTicket = _head.Ticket;
+        Ticket removedTicket = _head.Ticket;
         _head = _head.Next;
 
         return removedTicket;
     }
 
-    public ActiveTickets Peek()
+    // Gets the ticket at the top of the list
+    public Ticket Peek()
     {
         if (IsEmpty())
         {
@@ -52,10 +55,11 @@ public class ActiveTicketService
         return _head.Ticket;
     }
 
-    public List<ActiveTickets> GetTickets()
+    // Gets all tickets in the list
+    public List<Ticket> GetTickets()
     {
-        List<ActiveTickets> tickets = new List<ActiveTickets>();
-        ActiveTicketNode current = _head;
+        List<Ticket> tickets = new List<Ticket>();
+        ClosedTicketNode current = _head;
 
         while (current != null)
         {
