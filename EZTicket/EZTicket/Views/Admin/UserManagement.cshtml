@@ -1,6 +1,7 @@
 @model List<UserModel>
 @{
     Layout = "_AdminLayout";
+    ViewBag.Title = "User Management";
 }
 @* Admin can see all users and delete if necessary. there is also a button to create a new user *@
 <a class="btn btn-primary" asp-controller="Account" asp-action="RegisterUser">Register New User</a>
